@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(AlarmVisualizer))]
 public class AlarmSystem : MonoBehaviour
 {
     [SerializeField] private float _volumeIncreaseSpeed = 2.0f;
@@ -9,13 +8,7 @@ public class AlarmSystem : MonoBehaviour
     [SerializeField] private float _maxVolume = 1.0f;
     [SerializeField] private AudioSource _sound;
 
-    private AlarmVisualizer _visualizer;
     public bool IsTriggered { get; private set; } = false;
-
-    private void Awake()
-    {
-        _visualizer = GetComponent<AlarmVisualizer>();     
-    }
 
     private void Start()
     {
