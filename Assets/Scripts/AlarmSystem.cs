@@ -10,7 +10,7 @@ public class AlarmSystem : MonoBehaviour
     [SerializeField] private AudioSource _sound;
 
     private AlarmVisualizer _visualizer;
-    private bool _isTriggered = false;
+    public bool IsTriggered { get; private set; } = false;
 
     private void Awake()
     {
@@ -28,7 +28,7 @@ public class AlarmSystem : MonoBehaviour
 
         while (isWork)
         {
-            if (_isTriggered)
+            if (IsTriggered)
             {
                 _sound.volume = Mathf.MoveTowards(_sound.volume, _maxVolume, _volumeIncreaseSpeed * Time.deltaTime);
             }
@@ -45,8 +45,7 @@ public class AlarmSystem : MonoBehaviour
     {
         if (collision.GetComponent<Rogue>() != null)
         {
-            _isTriggered = true;
-            _visualizer.SetState(_isTriggered);
+            IsTriggered = true;
         }
     }
 
@@ -54,8 +53,7 @@ public class AlarmSystem : MonoBehaviour
     {
         if(collision.GetComponent <Rogue>() != null)
         {
-            _isTriggered = false;
-            _visualizer.SetState(_isTriggered);
+            IsTriggered = false;
         }
     }
 }
