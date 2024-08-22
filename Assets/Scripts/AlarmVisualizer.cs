@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class AlarmVisualizer : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer _alarmSprite;
+    [SerializeField] private SpriteRenderer _sprite;
 
-    public void SetAlarmState(bool isAlarmTriggered)
+    public void SetState(bool isTriggered)
     {
-        if (isAlarmTriggered)
+        if (isTriggered)
         {
-            _alarmSprite.color = Color.red;
+            _sprite.color = Color.red;
         }
         else
         {
-            _alarmSprite.color = Color.white;
+            _sprite.color = Color.white;
         }
     }
 }

@@ -1,29 +1,43 @@
+using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AlarmVisualizer))]
 public class AlarmSystem : MonoBehaviour
 {
-    [SerializeField] private float _alarmIncreaseSpeed = 2.0f;
-    [SerializeField] private float _alarmDecreaseSpeed = 1.0f;
-    [SerializeField] private float _alarmMaxVolume = 1.0f;
-    [SerializeField] private AudioSource _alarmSound;
+    [SerializeField] private float _volumeIncreaseSpeed = 2.0f;
+    [SerializeField] private float _volumeDecreaseSpeed = 1.0f;
+    [SerializeField] private float _maxVolume = 1.0f;
+    [SerializeField] private AudioSource _sound;
 
-    private bool _isAlarmTriggered = false;
     private AlarmVisualizer _visualizer;
+    private bool _isTriggered = false;
+
+    private void Awake()
+    {
+        _visualizer = GetComponent<AlarmVisualizer>();     
+    }
 
     private void Start()
     {
-        _visualizer = GetComponent<AlarmVisualizer>();   
+        StartCoroutine(ChangeVolume());
     }
 
-    private void Update()
+    private IEnumerator ChangeVolume()
     {
-        if (_isAlarmTriggered)
+        bool isWork = true;
+
+        while (isWork)
         {
-            _alarmSound.volume = Mathf.MoveTowards(_alarmSound.volume, _alarmMaxVolume, _alarmIncreaseSpeed * Time.deltaTime);
-        }
-        else
-        {
-            _alarmSound.volume = Mathf.MoveTowards(_alarmSound.volume, 0f, _alarmDecreaseSpeed * Time.deltaTime);
+            if (_isTriggered)
+            {
+                _sound.volume = Mathf.MoveTowards(_sound.volume, _maxVolume, _volumeIncreaseSpeed * Time.deltaTime);
+            }
+            else
+            {
+                _sound.volume = Mathf.MoveTowards(_sound.volume, 0f, _volumeDecreaseSpeed * Time.deltaTime);
+            }
+
+            yield return null;
         }
     }
 
@@ -31,8 +45,8 @@ public class AlarmSystem : MonoBehaviour
     {
         if (collision.GetComponent<Rogue>() != null)
         {
-            _isAlarmTriggered = true;
-            _visualizer.SetAlarmState(_isAlarmTriggered);
+            _isTriggered = true;
+            _visualizer.SetState(_isTriggered);
         }
     }
 
@@ -40,8 +54,8 @@ public class AlarmSystem : MonoBehaviour
     {
         if(collision.GetComponent <Rogue>() != null)
         {
-            _isAlarmTriggered = false;
-            _visualizer.SetAlarmState(_isAlarmTriggered);
+            _isTriggered = false;
+            _visualizer.SetState(_isTriggered);
         }
     }
 }
