@@ -12,26 +12,26 @@ public class AlarmSystem : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(ChangeVolume());
+        StartCoroutine(ChangeVolume(_sound.volume));
     }
 
-    private IEnumerator ChangeVolume()
+    private IEnumerator ChangeVolume(float targetVolume)
     {
-        bool isWork = true;
+        float minTargetValue = 0.01f;
+        float speed;
 
-        while (isWork)
+        if (IsTriggered)       
+            speed = _volumeIncreaseSpeed;       
+        else      
+            speed = _volumeDecreaseSpeed;
+
+        while (Mathf.Abs(_sound.volume - targetVolume) > minTargetValue)
         {
-            if (IsTriggered)
-            {
-                _sound.volume = Mathf.MoveTowards(_sound.volume, _maxVolume, _volumeIncreaseSpeed * Time.deltaTime);
-            }
-            else
-            {
-                _sound.volume = Mathf.MoveTowards(_sound.volume, 0f, _volumeDecreaseSpeed * Time.deltaTime);
-            }
-
+            _sound.volume = Mathf.MoveTowards(_sound.volume, targetVolume, speed * Time.deltaTime);
             yield return null;
         }
+
+        yield break;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -39,6 +39,7 @@ public class AlarmSystem : MonoBehaviour
         if (collision.GetComponent<Rogue>() != null)
         {
             IsTriggered = true;
+            StartCoroutine(ChangeVolume(_maxVolume));
         }
     }
 
@@ -47,6 +48,7 @@ public class AlarmSystem : MonoBehaviour
         if(collision.GetComponent <Rogue>() != null)
         {
             IsTriggered = false;
+            StartCoroutine(ChangeVolume(0f));
         }
     }
 }
